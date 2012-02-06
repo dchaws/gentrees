@@ -6,14 +6,23 @@
 
 using namespace std;
 
+class namedist 
+{
+public:
+    int label;
+    double dist;
+};
+
 class treenode
 {
 public:
     treenode (int nodelabel) { mylabel = nodelabel;};
-    treenode (treenode *inherchildren, int nodelabel);
+    treenode (list <treenode *> inherchildren, int nodelabel);
     ~treenode ();
     void print();
     void addchild (int nodelabel);
+    list <namedist> distancetoleafs(int disttoroot);
+
     list <treenode *> children;
     int mylabel;
 private:
@@ -62,6 +71,49 @@ void treenode::addchild(int nodelabel)
 {
     treenode *newnode = new treenode(nodelabel);
     children.push_back(newnode);
+}
+
+void pushdistancetoleafslist (list <namedist> &listone, list <namedist> listtwo)
+{
+    list <namedist>::iterator ndit;
+    for (ndit=listtwo.begin();ndit!=listtwo.end();ndit++)
+    {
+        listone.push_back(*ndit);
+    }
+}
+
+list <namedist> treenode::distancetoleafs(int disttoroot)
+{
+    if (children.empty())
+    {
+        namedist mynamedist;
+        mynamedist.label = mylabel;
+        mynamedist.dist = disttoroot;
+        list <namedist> mynamedistlist;
+        mynamedistlist.push_back(mynamedist);
+        return mynamedistlist;
+    }
+    else {
+        list <namedist> retnamedistlist;
+
+        list <treenode *>::iterator tit = children.begin();
+        for (;tit!=children.end();tit++)
+        {
+            pushdistancetoleafslist (retnamedistlist,(*tit)->distancetoleafs(disttoroot + 1));
+        }
+
+        return retnamedistlist;
+    }
+}
+
+void printnamedistlist (list <namedist> &mynamedistlist)
+{
+    list <namedist>::iterator ndit;
+    for (ndit=mynamedistlist.begin();ndit!=mynamedistlist.end();ndit++)
+    {
+        cout << (*ndit).label << ":" << (*ndit).dist << endl;
+    }
+
 }
 
 int main (int argc, char **argv)
