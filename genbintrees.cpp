@@ -139,4 +139,6 @@ int main (int argc, char **argv)
 
     firstnode.print();
 
+    printnamedistlist(firstnode.distancetoleafs(0));
+
 }
