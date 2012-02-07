@@ -60,10 +60,10 @@ void treenode::print()
                 cout << ",";
             }
         }
-        cout << ")" << mylabel << endl;
+        cout << ")" << mylabel;
     }
     else {
-        cout << mylabel ;
+        cout << mylabel;
     }
 }
 
@@ -106,14 +106,61 @@ list <namedist> treenode::distancetoleafs(int disttoroot)
     }
 }
 
-void printnamedistlist (list <namedist> &mynamedistlist)
+void printnamedistlist (list <namedist> mynamedistlist)
 {
     list <namedist>::iterator ndit;
     for (ndit=mynamedistlist.begin();ndit!=mynamedistlist.end();ndit++)
     {
         cout << (*ndit).label << ":" << (*ndit).dist << endl;
     }
+}
 
+void insertleafs (treenode &sometreenode, int numtotalleafs, int numcurleafs)
+{
+    cout << "insertleafs: numtotalleafs = " << numtotalleafs << ", numcurleafs = " << numcurleafs << endl;
+    sometreenode.print();
+    cout << endl;
+    if (numcurleafs >= numtotalleafs || sometreenode.children.empty()){
+        cout << "    Exiting." << endl;
+        return;
+    }
+
+    list <treenode *>::iterator tit = sometreenode.children.begin();
+    list <treenode *> newchildren;
+    for (;tit!=sometreenode.children.end();tit++)
+    {
+        cout << "   Current label: " << (*tit)->mylabel << endl;
+        insertleafs(*(*tit),numtotalleafs,numcurleafs);
+
+        treenode *curchild = *tit;
+
+        treenode *newtreeleaf = new treenode(numcurleafs+1);
+        newchildren.clear();
+        // Make new treenode with children *tit and a new node
+        newchildren.push_back(*tit);
+        newchildren.push_back(newtreeleaf);
+        treenode *newtreenode = new treenode(newchildren,-1);
+
+        sometreenode.children.erase(tit);
+        tit++;
+        cout << "   New Current label: " << (*tit)->mylabel << endl;
+
+        sometreenode.children.push_front(newtreenode);
+        insertleafs(sometreenode,numtotalleafs,numcurleafs+1);
+        // Should delete newtreenode and make sometree like nothing happened.
+        sometreenode.children.pop_front();
+        sometreenode.children.insert(tit,curchild);
+        tit--;
+        cout << "   New Current label: " << (*tit)->mylabel << endl;
+        //sometreenode.children.push_front(curchild);
+        cout << "   Current tree: ";
+        sometreenode.print();
+        cout << endl;
+        newtreenode->children.clear();
+        delete newtreenode;
+        delete newtreeleaf;
+    }
+    cout << "    Ending the loop." << endl;
 }
 
 int main (int argc, char **argv)
@@ -138,7 +185,10 @@ int main (int argc, char **argv)
     firstnode.addchild(3);
 
     firstnode.print();
+    cout << endl;
 
     printnamedistlist(firstnode.distancetoleafs(0));
+
+    insertleafs(firstnode,4,3);
 
 }
