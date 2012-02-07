@@ -193,6 +193,6 @@ int main (int argc, char **argv)
 
     printnamedistlist(firstnode.distancetoleafs(0));
 
-    insertleafs(firstnode,firstnode,5,3);
+    insertleafs(firstnode,firstnode,numtaxa,3);
 
 }
