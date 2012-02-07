@@ -60,7 +60,8 @@ void treenode::print()
                 cout << ",";
             }
         }
-        cout << ")" << mylabel;
+        //cout << ")" << mylabel;
+        cout << ")";
     }
     else {
         cout << mylabel;
@@ -115,10 +116,13 @@ void printnamedistlist (list <namedist> mynamedistlist)
     }
 }
 
-void insertleafs (treenode &sometreenode, int numtotalleafs, int numcurleafs)
+void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalleafs, int numcurleafs)
 {
     cout << "insertleafs: numtotalleafs = " << numtotalleafs << ", numcurleafs = " << numcurleafs << endl;
-    sometreenode.print();
+    if (numcurleafs == numtotalleafs){
+        cout << "Terminal tree." << endl;
+    }
+    origtreenode.print();
     cout << endl;
     if (numcurleafs >= numtotalleafs || sometreenode.children.empty()){
         cout << "    Exiting." << endl;
@@ -129,8 +133,8 @@ void insertleafs (treenode &sometreenode, int numtotalleafs, int numcurleafs)
     list <treenode *> newchildren;
     for (;tit!=sometreenode.children.end();tit++)
     {
-        cout << "   Current label: " << (*tit)->mylabel << endl;
-        insertleafs(*(*tit),numtotalleafs,numcurleafs);
+        //cout << "   Current label: " << (*tit)->mylabel << endl;
+        insertleafs(origtreenode, *(*tit),numtotalleafs,numcurleafs);
 
         treenode *curchild = *tit;
 
@@ -143,19 +147,19 @@ void insertleafs (treenode &sometreenode, int numtotalleafs, int numcurleafs)
 
         sometreenode.children.erase(tit);
         tit++;
-        cout << "   New Current label: " << (*tit)->mylabel << endl;
+        //cout << "   New Current label: " << (*tit)->mylabel << endl;
 
         sometreenode.children.push_front(newtreenode);
-        insertleafs(sometreenode,numtotalleafs,numcurleafs+1);
+        insertleafs(origtreenode, sometreenode,numtotalleafs,numcurleafs+1);
         // Should delete newtreenode and make sometree like nothing happened.
         sometreenode.children.pop_front();
         sometreenode.children.insert(tit,curchild);
         tit--;
-        cout << "   New Current label: " << (*tit)->mylabel << endl;
+        //cout << "   New Current label: " << (*tit)->mylabel << endl;
         //sometreenode.children.push_front(curchild);
-        cout << "   Current tree: ";
-        sometreenode.print();
-        cout << endl;
+        //cout << "   Current tree: ";
+        //sometreenode.print();
+        //cout << endl;
         newtreenode->children.clear();
         delete newtreenode;
         delete newtreeleaf;
@@ -189,6 +193,6 @@ int main (int argc, char **argv)
 
     printnamedistlist(firstnode.distancetoleafs(0));
 
-    insertleafs(firstnode,4,3);
+    insertleafs(firstnode,firstnode,5,3);
 
 }
