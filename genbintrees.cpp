@@ -118,14 +118,16 @@ void printnamedistlist (list <namedist> mynamedistlist)
 
 void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalleafs, int numcurleafs)
 {
-    cout << "insertleafs: numtotalleafs = " << numtotalleafs << ", numcurleafs = " << numcurleafs << endl;
+    //cout << "insertleafs: numtotalleafs = " << numtotalleafs << ", numcurleafs = " << numcurleafs << endl;
+    //origtreenode.print();
+    //cout << endl;
     if (numcurleafs == numtotalleafs){
-        cout << "Terminal tree." << endl;
+        //cout << "Terminal tree." << endl;
+        origtreenode.print();
+        cout << endl;
     }
-    origtreenode.print();
-    cout << endl;
     if (numcurleafs >= numtotalleafs || sometreenode.children.empty()){
-        cout << "    Exiting." << endl;
+        //cout << "    Exiting." << endl;
         return;
     }
 
@@ -164,7 +166,7 @@ void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalle
         delete newtreenode;
         delete newtreeleaf;
     }
-    cout << "    Ending the loop." << endl;
+    //cout << "    Ending the loop." << endl;
 }
 
 int main (int argc, char **argv)
