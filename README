@@ -1,0 +1,20 @@
+David C. Haws 2/2/2012
+Program to generate all binary trees with labeled leafs.
+
+Uses simple DFS to insert leafs one by one. 
+
+
+Test run:
+    $ for i in $(seq 3 10);do echo $i;time ./genbintrees $i | wc -l;done
+
+3 1         real	0m0.002s    user	0m0.001s    sys	0m0.003s
+4 3         real	0m0.004s    user	0m0.001s    sys	0m0.002s
+5 15        real	0m0.004s    user	0m0.001s    sys	0m0.002s
+6 105       real	0m0.003s    user	0m0.001s    sys	0m0.003s
+7 945       real	0m0.013s    user	0m0.007s    sys	0m0.004s
+8 10395     real	0m0.089s    user	0m0.073s    sys	0m0.038s
+9 135135    real	0m1.154s    user	0m0.996s    sys	0m0.462s
+10 2027025  real	0m18.180s   user	0m15.641s   sys	0m6.940s
+
+
+

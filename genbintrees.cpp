@@ -180,8 +180,6 @@ void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalle
             for (int i=0;i<indentlevel;i++){ cout << " "; }
             cout << "  Recursing inserting new leaf." << endl;
         }
-        //insertleafs(origtreenode, sometreenode,numtotalleafs,numcurleafs+1,indentlevel+4);
-        //insertleafs(origtreenode, *newtreenode, numtotalleafs,numcurleafs+1,indentlevel+4);
         insertleafs(origtreenode, origtreenode, numtotalleafs,numcurleafs+1,indentlevel+4);
 
         // Should delete newtreenode and make sometree like nothing happened.
@@ -209,6 +207,8 @@ int main (int argc, char **argv)
     if (argc <= 1)
     {
         cout << "This program will generate all labeled binary trees." << endl;
+        cout << "Usage: ./genbintrees <number of leafs>" << endl;
+        cout << "       -d Print debug information." << endl;
         exit(0);
     }
     else
