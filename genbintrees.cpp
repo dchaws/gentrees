@@ -116,18 +116,30 @@ void printnamedistlist (list <namedist> mynamedistlist)
     }
 }
 
-void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalleafs, int numcurleafs)
+
+void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalleafs, int numcurleafs, int indentlevel)
 {
-    //cout << "insertleafs: numtotalleafs = " << numtotalleafs << ", numcurleafs = " << numcurleafs << endl;
-    //origtreenode.print();
-    //cout << endl;
+    for (int i=0;i<indentlevel;i++){ cout << " "; }
+    cout << "insertleafs: numtotalleafs = " << numtotalleafs << ", numcurleafs = " << numcurleafs << endl;
+    for (int i=0;i<indentlevel;i++){ cout << " "; }
+    cout << "  Original Tree: ";
+    origtreenode.print();
+    cout << endl;
+    for (int i=0;i<indentlevel;i++){ cout << " "; }
+    cout << "  Some Tree Node: ";
+    sometreenode.print();
+    cout << endl;
     if (numcurleafs == numtotalleafs){
-        //cout << "Terminal tree." << endl;
+        for (int i=0;i<indentlevel;i++){ cout << " "; }
+        cout << "  Terminal tree." << endl;
+        for (int i=0;i<indentlevel;i++){ cout << " "; }
+        cout << "  ";
         origtreenode.print();
         cout << endl;
     }
     if (numcurleafs >= numtotalleafs || sometreenode.children.empty()){
-        //cout << "    Exiting." << endl;
+        for (int i=0;i<indentlevel;i++){ cout << " "; }
+        cout << "  Exiting." << endl;
         return;
     }
 
@@ -136,7 +148,9 @@ void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalle
     for (;tit!=sometreenode.children.end();tit++)
     {
         //cout << "   Current label: " << (*tit)->mylabel << endl;
-        insertleafs(origtreenode, *(*tit),numtotalleafs,numcurleafs);
+        for (int i=0;i<indentlevel;i++){ cout << " "; }
+        cout << "  Recursing without inserting new leaf." << endl;
+        insertleafs(origtreenode, *(*tit),numtotalleafs,numcurleafs,indentlevel+4);
 
         treenode *curchild = *tit;
 
@@ -152,7 +166,9 @@ void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalle
         //cout << "   New Current label: " << (*tit)->mylabel << endl;
 
         sometreenode.children.push_front(newtreenode);
-        insertleafs(origtreenode, sometreenode,numtotalleafs,numcurleafs+1);
+        for (int i=0;i<indentlevel;i++){ cout << " "; }
+        cout << "  Recursing inserting new leaf." << endl;
+        insertleafs(origtreenode, sometreenode,numtotalleafs,numcurleafs+1,indentlevel+4);
         // Should delete newtreenode and make sometree like nothing happened.
         sometreenode.children.pop_front();
         sometreenode.children.insert(tit,curchild);
@@ -183,18 +199,18 @@ int main (int argc, char **argv)
         numtaxa = atoi(argv[1]);
     }
 
-    cout << "Number of taxa: " << numtaxa << endl;
+//    cout << "Number of taxa: " << numtaxa << endl;
     
     treenode firstnode(-1);
     firstnode.addchild(1);
     firstnode.addchild(2);
     firstnode.addchild(3);
 
-    firstnode.print();
-    cout << endl;
+//    firstnode.print();
+//    cout << endl;
+//
+//    printnamedistlist(firstnode.distancetoleafs(0));
 
-    printnamedistlist(firstnode.distancetoleafs(0));
-
-    insertleafs(firstnode,firstnode,numtaxa,3);
+    insertleafs(firstnode,firstnode,numtaxa,3,0);
 
 }
