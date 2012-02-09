@@ -109,13 +109,37 @@ list <namedist> treenode::distancetoleafs(int disttoroot)
     }
 }
 
+int **namedistlisttodistmatrix (list <namedist> mynamedistlist)
+{
+    int **distmatrix = new int *[mynamedistlist.size()];
+    for (int i=0;i<(int)mynamedistlist.size();i++)
+    {
+        distmatrix[i] = new int [mynamedistlist.size()];
+    }
+    list <namedist>::iterator ndit;
+    list <namedist>::iterator ndit2;
+    for (ndit=mynamedistlist.begin();ndit!=mynamedistlist.end();ndit++)
+    {
+    }
+    return distmatrix;
+}
+
 void printnamedistlist (list <namedist> mynamedistlist)
 {
     list <namedist>::iterator ndit;
+    list <namedist>::iterator ndit2;
+    cout << "[";
     for (ndit=mynamedistlist.begin();ndit!=mynamedistlist.end();ndit++)
     {
-        cout << (*ndit).label << ":" << (*ndit).dist << endl;
+        cout << (*ndit).label << ":" << (*ndit).dist;
+        ndit2=ndit;
+        ndit2++;
+        if (ndit2 != mynamedistlist.end())
+        {
+            cout << ",";
+        }
     }
+    cout << "]";
 }
 
 
@@ -141,6 +165,8 @@ void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalle
             cout << "  ";
         }
         origtreenode.print();
+        cout << "    ";
+        printnamedistlist(origtreenode.distancetoleafs(0));
         cout << endl;
     }
     if (numcurleafs >= numtotalleafs || sometreenode.children.empty()){
