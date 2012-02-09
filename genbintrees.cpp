@@ -181,7 +181,9 @@ void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalle
             cout << "  Recursing inserting new leaf." << endl;
         }
         //insertleafs(origtreenode, sometreenode,numtotalleafs,numcurleafs+1,indentlevel+4);
-        insertleafs(origtreenode, *newtreenode, numtotalleafs,numcurleafs+1,indentlevel+4);
+        //insertleafs(origtreenode, *newtreenode, numtotalleafs,numcurleafs+1,indentlevel+4);
+        insertleafs(origtreenode, origtreenode, numtotalleafs,numcurleafs+1,indentlevel+4);
+
         // Should delete newtreenode and make sometree like nothing happened.
         sometreenode.children.pop_front();
         sometreenode.children.insert(tit,curchild);
