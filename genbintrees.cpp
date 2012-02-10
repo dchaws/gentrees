@@ -15,6 +15,60 @@ public:
     double dist;
 };
 
+class int2d
+{
+public:
+    int2d () {arrayinit=0;};
+    int2d (int n, int m);
+    ~int2d ();
+    int & operator() (const int n, const int m);
+private:
+    int nlim,mlim;
+    int **myarray;
+    int arrayinit;
+};
+
+int2d::int2d(int n, int m)
+{
+    arrayinit = 1;
+    nlim=n;
+    mlim=m;
+    myarray = new int *[n];
+    for (int i=0;i<n;i++)
+    {
+        myarray[i] = new int [m];
+        for (int j=0;j<m;j++)
+        {
+            myarray[i][j] = 0;
+        }
+    }
+}
+
+int2d::~int2d ()
+{
+    if (arrayinit == 1)
+    {
+        for (int i=0;i<nlim;i++)
+        {
+            delete myarray[i];
+        }
+        delete myarray;
+    }
+}
+
+int & int2d::operator() (const int n, const int m)
+{
+    if (arrayinit == 0 || n < 0 || m < 0 || n > nlim || m > mlim)
+    {
+        cout << "int2d: Array not initialized or out of bounds. " << endl;
+        exit(0);
+    }
+    else 
+    {
+        return myarray[n][m];
+    }
+}
+
 class treenode
 {
 public:
@@ -23,7 +77,7 @@ public:
     ~treenode ();
     void print();
     void addchild (int nodelabel);
-    list <namedist> distancetoleafs(int disttoroot);
+    list <namedist> distancetoleafs(int disttoroot, int2d &distmatrix);
 
     list <treenode *> children;
     int mylabel;
@@ -85,7 +139,7 @@ void pushdistancetoleafslist (list <namedist> &listone, list <namedist> listtwo)
     }
 }
 
-list <namedist> treenode::distancetoleafs(int disttoroot)
+list <namedist> treenode::distancetoleafs(int disttoroot, int2d &distmatrix)
 {
     if (children.empty())
     {
@@ -102,12 +156,13 @@ list <namedist> treenode::distancetoleafs(int disttoroot)
         list <treenode *>::iterator tit = children.begin();
         for (;tit!=children.end();tit++)
         {
-            pushdistancetoleafslist (retnamedistlist,(*tit)->distancetoleafs(disttoroot + 1));
+            //pushdistancetoleafslist (retnamedistlist,(*tit)->distancetoleafs(disttoroot + 1));
         }
 
         return retnamedistlist;
     }
 }
+
 
 int **namedistlisttodistmatrix (list <namedist> mynamedistlist)
 {
@@ -115,13 +170,40 @@ int **namedistlisttodistmatrix (list <namedist> mynamedistlist)
     for (int i=0;i<(int)mynamedistlist.size();i++)
     {
         distmatrix[i] = new int [mynamedistlist.size()];
+        for (int j=0;j<(int)mynamedistlist.size();j++)
+        {
+            distmatrix[i][j] = 0;
+        }
     }
+    //cout << "Matrix initialized." << endl;
     list <namedist>::iterator ndit;
     list <namedist>::iterator ndit2;
     for (ndit=mynamedistlist.begin();ndit!=mynamedistlist.end();ndit++)
     {
+        for (ndit2=mynamedistlist.begin();ndit2!=mynamedistlist.end();ndit2++)
+        {
+            if ((*ndit).label != (*ndit2).label)
+            {
+                //cout << (*ndit).label << " " << (*ndit2).label << endl;
+                distmatrix[(*ndit).label - 1][(*ndit2).label - 1] = (*ndit).dist + (*ndit2).dist;
+                distmatrix[(*ndit2).label - 1][(*ndit).label - 1] = (*ndit).dist + (*ndit2).dist;
+            }
+        }
     }
+    //cout << "Matrix calculated." << endl;
     return distmatrix;
+}
+
+void printdistmatrix(int **distmatrix,int n)
+{
+    for (int i=0;i<n;i++)
+    {
+        for (int j=0;j<n;j++)
+        {
+            cout << distmatrix[i][j] << " ";
+        }
+        cout << endl;
+    }
 }
 
 void printnamedistlist (list <namedist> mynamedistlist)
@@ -166,7 +248,7 @@ void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalle
         }
         origtreenode.print();
         cout << "    ";
-        printnamedistlist(origtreenode.distancetoleafs(0));
+        //list <namedist> disttoleafs = origtreenode.distancetoleafs(0);
         cout << endl;
     }
     if (numcurleafs >= numtotalleafs || sometreenode.children.empty()){
