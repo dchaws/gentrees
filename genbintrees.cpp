@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <list>
+#include <math.h>
 
 using namespace std;
 
@@ -22,6 +23,8 @@ public:
     int2d (int n, int m);
     ~int2d ();
     void print ();
+    void printupperdiagvector ();
+    void printupperdiagvectorpauplin ();
     int & operator() (const int n, const int m);
 private:
     int nlim,mlim;
@@ -82,6 +85,36 @@ void int2d::print ()
             }
             cout << endl;
         }
+    }
+}
+
+void int2d::printupperdiagvector ()
+{
+    if (arrayinit == 1)
+    {
+        for (int i=0;i<nlim;i++)
+        {
+            for (int j=i+1;j<mlim;j++)
+            {
+                cout << myarray[i][j] << " ";
+            }
+        }
+        cout << endl;
+    }
+}
+
+void int2d::printupperdiagvectorpauplin ()
+{
+    if (arrayinit == 1)
+    {
+        for (int i=0;i<nlim;i++)
+        {
+            for (int j=i+1;j<mlim;j++)
+            {
+                cout << "1/" << pow(2,myarray[i][j]-1) << " ";
+            }
+        }
+        cout << endl;
     }
 }
 
@@ -294,6 +327,10 @@ void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalle
         int2d mydistmatrix(numtotalleafs,numtotalleafs);
         origtreenode.distancetoleafs(0,mydistmatrix);
         mydistmatrix.print();
+        cout << "Vector        : ";
+        mydistmatrix.printupperdiagvector();
+        cout << "Pauplin Vector: ";
+        mydistmatrix.printupperdiagvectorpauplin();
         cout << endl;
     }
     if (numcurleafs >= numtotalleafs || sometreenode.children.empty()){
