@@ -17,4 +17,6 @@ Test run:
 10 2027025  real	0m18.180s   user	0m15.641s   sys	0m6.940s
 
 
+To get the raw Pauplin vectors:
+    $ ./genbintrees 8 | grep "Pauplin Vector (dec)" | sed 's/Pauplin Vector (dec): //'
 
