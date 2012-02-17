@@ -2,8 +2,12 @@
 // Program to generate all binary trees with labeled leafs.
 
 #include <iostream>
+#include <iomanip>
 #include <list>
 #include <math.h>
+
+#define PAUP_RAT 0
+#define PAUP_DEC 1
 
 using namespace std;
 
@@ -25,6 +29,7 @@ public:
     void print ();
     void printupperdiagvector ();
     void printupperdiagvectorpauplin ();
+    void printupperdiagvectorpauplin (int format);
     int & operator() (const int n, const int m);
 private:
     int nlim,mlim;
@@ -79,11 +84,12 @@ void int2d::print ()
     {
         for (int i=0;i<nlim;i++)
         {
+            cout << "| ";
             for (int j=0;j<mlim;j++)
             {
-                cout << myarray[i][j] << " ";
+                cout << setw(3) << myarray[i][j] << " ";
             }
-            cout << endl;
+            cout << " |" << endl;
         }
     }
 }
@@ -105,13 +111,25 @@ void int2d::printupperdiagvector ()
 
 void int2d::printupperdiagvectorpauplin ()
 {
+    this->printupperdiagvectorpauplin(PAUP_RAT);
+}
+
+void int2d::printupperdiagvectorpauplin (int format)
+{
     if (arrayinit == 1)
     {
         for (int i=0;i<nlim;i++)
         {
             for (int j=i+1;j<mlim;j++)
             {
-                cout << "1/" << pow(2,myarray[i][j]-1) << " ";
+                if (format == PAUP_RAT) 
+                {
+                    cout << "1/" << pow(2,myarray[i][j]-1) << " ";
+                }
+                if (format == PAUP_DEC) 
+                {
+                    cout << 1/pow(2,myarray[i][j]-1) << " ";
+                }
             }
         }
         cout << endl;
@@ -322,15 +340,18 @@ void insertleafs (treenode &origtreenode, treenode &sometreenode, int numtotalle
             for (int i=0;i<indentlevel;i++){ cout << " "; }
             cout << "  ";
         }
+        cout << "Newick              : ";
         origtreenode.print();
         cout << endl;
         int2d mydistmatrix(numtotalleafs,numtotalleafs);
         origtreenode.distancetoleafs(0,mydistmatrix);
-        mydistmatrix.print();
-        cout << "Vector        : ";
+        cout << "Vector              : ";
         mydistmatrix.printupperdiagvector();
-        cout << "Pauplin Vector: ";
-        mydistmatrix.printupperdiagvectorpauplin();
+        cout << "Pauplin Vector (rat): ";
+        mydistmatrix.printupperdiagvectorpauplin(PAUP_RAT);
+        cout << "Pauplin Vector (dec): ";
+        mydistmatrix.printupperdiagvectorpauplin(PAUP_DEC);
+        mydistmatrix.print();
         cout << endl;
     }
     if (numcurleafs >= numtotalleafs || sometreenode.children.empty()){
